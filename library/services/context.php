@@ -18,7 +18,7 @@ class Context implements IService {
     public static function operation($params) {
         switch ($params['option']) {
             case self::OPERATION_FETCH:
-                return self::fetchService($params['sign']);
+                return self::fetch($params['sign']);
             case self::OPERATION_ADD:
                 return self::register($params);
             case self::OPERATION_DELETE:
@@ -33,10 +33,10 @@ class Context implements IService {
     /**
      * @see IService::fetchService()
      */
-    public static function fetchService(&$sign, $default = false) {
+    public static function fetch(&$sign) {
         $md5Name = md5($sign);
-        print_r(self::$_list[$md5Name]);
-        return isset(self::$_list[$md5Name]) ? self::$_list[$md5Name] : $default;
+
+        return isset(self::$_list[$md5Name]) ? self::$_list[$md5Name] : false;
     }
 
     /**

@@ -9,25 +9,29 @@
  * @link http://github.com/cqlucasho
  */
 class Client {
-    public function __construct($url) {
-        $this->address = $url;
+    public function __construct() {
         $this->_loadClass();
     }
 
+    /**
+     * 调用服务
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return string
+     */
     public function __call($name, $arguments) {
         $this->func_name = $name;
         $this->func_arguments = $arguments;
 
         try {
-            /**
-             * 检测服务是否可用
-             * TODO: 是否需要故障转移
-             */
-            $this->_services = new Services($this->_services_address_list[0]);
-            $data = $this->_services->check($this->func_name);
+            # 检测服务是否可用, 并作故障转移
+            $this->_services = new Services($this->_services_address);
+            $data = $this->_services->fetch($this->func_name);
             $result = json_decode($data);
+            print_r($result);die();
             if($result->status === 200) {
-                $this->_createClient();
+                $this->_createClient($result->result->address);
 
                 return $this->_connect();
             }
@@ -40,21 +44,22 @@ class Client {
     }
 
     /**
-     * 设置服务管理地址
+     * 设置注册服务中心所在的服务器地址
      *
-     * @param array $address
+     * @param string $address 地址
      */
-    public function setServiceServer($address = array()) {
-        $this->_services_address_list = $address;
+    public function setServiceServer($address) {
+        $this->_services_address = $address;
     }
 
     /**
      * 创建客户端socket句柄
      *
+     * @param string $address 服务所在的服务器地址
      * @throws Exception
      */
-    protected function _createClient() {
-        $this->_socket = stream_socket_client($this->address, $errno, $errstr, 0);
+    protected function _createClient($address) {
+        $this->_socket = stream_socket_client($address, $errno, $errstr, 0);
         if(!$this->_socket) {
             throw new Exception("$errstr ($errno)");
         }
@@ -111,9 +116,9 @@ class Client {
     protected $_services = null;
     /**
      * 服务管理地址列表
-     * @var null|object $_services_address_list
+     * @var string $_services_address
      */
-    protected $_services_address_list = null;
+    protected $_services_address = '';
 
     /**
      * 方法调用名称

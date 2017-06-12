@@ -123,13 +123,16 @@ class Server extends AServer {
 
     /**
      * 注册服务
+     *
+     * @param string $address 地址
+     * @param array $services 服务所在服务器及状态
      */
     public function registerServer($address, $services = array()) {
         Ant::import('library.services.services');
         $servicesObj = new Services($address);
 
-        foreach($services as $sign => $params) {
-            $servicesObj->register($sign, $params);
+        foreach($services as $name => $value) {
+            $servicesObj->register($name, $value);
         }
 
         $servicesObj->close();

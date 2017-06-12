@@ -10,7 +10,7 @@ abstract class AServices {
      * @param string $error_status 错误状态码
      * @return string
      */
-    protected static function result($receData, $data, $error_info = '', $error_status = '404') {
+    protected static function result($receData, $data, $error_info = 'Not Found', $error_status = '404') {
         if(!empty($receData)) {
             $result = json_decode($receData);
             if(is_object($result) && $result->status === 200) {
@@ -38,7 +38,6 @@ class Services extends AServices {
      * @throws Exception
      */
     public function __construct($url) {
-        $this->address = $url;
         $this->_socket = stream_socket_client($url, $errno, $errstr, 5);
         if(!$this->_socket) {
             throw new Exception("$errstr ($errno)");
@@ -130,13 +129,15 @@ class Services extends AServices {
      * @throws Exception
      */
     protected function _read($data) {
-        $data = json_encode($data);
-        $len = fwrite($this->_socket, $data);
+        $encodeData = json_encode($data);
+        $len = fwrite($this->_socket, $encodeData);
         if($len) {
             while($this->_received_data = fread($this->_socket, AConn::RECEIVE_READ_SIZE)) {
                 $this->close();
-                return self::result($this->_received_data, $data, 'Not Found', '404');
+                return self::result($this->_received_data, $data);
             }
+
+            $this->close();
         }
 
         throw new Exception('接收服务请求结果失败');

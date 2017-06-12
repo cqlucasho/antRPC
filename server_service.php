@@ -32,15 +32,22 @@ try {
 
     $servicesServer->onSend = function($datas) {
         if(is_array($datas)) {
-            $result = true;
+            $result = false;
             $datas = array_filter($datas);
 
             foreach($datas as $value) {
                 $data = json_decode($value, true);
+                echo "------------------------------\ndata:\n";
+                print_r($data);
+                echo "\n";
+
                 switch($data['type']) {
                     case IService::SERVICE_TYPE_SERVICE: {
                         $resultData = Service::operation($data);
-                        if($result !== false && $resultData === true) {
+                        echo "resultData:\n";
+                        print_r($resultData);
+                        echo "\n";
+                        if(!empty($resultData) || $resultData === true) {
                             $result = $resultData;
                         }
 
@@ -51,7 +58,7 @@ try {
                 }
             }
 
-            if($result) {
+            if(!empty($result) || $result === true) {
                 return json_encode(array('status' => 200, 'result' => $result));
             } else {
                 return json_encode(array('status' => 404, 'result' => false));

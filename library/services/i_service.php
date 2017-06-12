@@ -29,10 +29,9 @@ interface IService {
      * 获取注册服务
      *
      * @param string $sign 唯一标识符
-     * @param bool $default 默认值
      * @return mixed
      */
-    static function fetchService(&$sign, $default = false);
+    static function fetch(&$sign);
 
     /**
      * 服务类型
