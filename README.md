@@ -11,7 +11,7 @@ server.php is basic for the framework.
 client.php is client request class.
 
 ## server_service.php
-various of service manager center
+service manager center
 
 ## worker.php
 the test file for server.
