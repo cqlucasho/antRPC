@@ -26,7 +26,7 @@ try {
     $server->registerServer('tcp://127.0.0.1:8089', array(
         'testData' => array('127.0.0.1:8090' => array('state' => true, 'flag' => true), '127.0.0.1:8091' => false),
         'testData1' => array('127.0.0.1:8090' => array('state' => true, 'flag' => true), '127.0.0.2:8091' => false)
-    ));
+    )); 
 
     # 运行服务器
     $server->runAll();
