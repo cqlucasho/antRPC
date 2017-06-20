@@ -29,7 +29,6 @@ class Client {
             $this->_services = new Services($this->_services_address);
             $data = $this->_services->fetch($this->func_name);
             $result = json_decode($data);
-            print_r($result);die();
             if($result->status === 200) {
                 $this->_createClient($result->result->address);
 
