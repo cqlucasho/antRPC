@@ -70,7 +70,7 @@ class Server extends AServer {
     public function accept($socket) {
         if(!is_resource($socket)) throw new Exception('the function accept of tcp.php argument is invalid resource!');
 
-        $socketAccept = @stream_socket_accept($socket, 5);
+        $socketAccept = @stream_socket_accept($socket, 0);
         if(!$socketAccept) return;
 
         # 更新记数

@@ -35,11 +35,6 @@ class Service implements IService {
      */
     public static function fetch(&$sign) {
         $md5Name = md5($sign);
-        echo "------------md5Name-------------\n";
-        print_r($md5Name);
-        echo "#######";
-        print_r(self::$_service_map[$md5Name]);
-        echo "\n------------md5Name-------------\n";
         if(isset(self::$_service_map[$md5Name])) {
             $services = self::$_service_map[$md5Name];
 

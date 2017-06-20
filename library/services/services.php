@@ -38,7 +38,7 @@ class Services extends AServices {
      * @throws Exception
      */
     public function __construct($url) {
-        $this->_socket = stream_socket_client($url, $errno, $errstr, 5);
+        $this->_socket = stream_socket_client($url, $errno, $errstr, 0);
         if(!$this->_socket) {
             throw new Exception("$errstr ($errno)");
         }

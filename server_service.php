@@ -22,7 +22,7 @@ class ServerService extends Server {
 
 try {
     $servicesServer = new ServerService('tcp://127.0.0.1:8089');
-    $servicesServer->process_count = 4;
+    $servicesServer->process_count = 1;
 
     $servicesServer->onMessage = function($data) {
         $receDatas = explode(';', $data);
