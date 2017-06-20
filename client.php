@@ -141,7 +141,7 @@ class Client {
      */
     protected $_micro_service_server_list = array();
 
-    /**
+    /** 
      * 最大发送/接收数据大小
      */
     const MAX_SEND_DATA = 1048576;
