@@ -37,16 +37,10 @@ try {
 
             foreach($datas as $value) {
                 $data = json_decode($value, true);
-                echo "------------------------------\ndata:\n";
-                print_r($data);
-                echo "\n";
 
                 switch($data['type']) {
                     case IService::SERVICE_TYPE_SERVICE: {
                         $resultData = Service::operation($data);
-                        echo "resultData:\n";
-                        print_r($resultData);
-                        echo "\n";
                         if(!empty($resultData) || $resultData === true) {
                             $result = $resultData;
                         }
