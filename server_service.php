@@ -10,8 +10,8 @@ Ant::import('library.services.context');
  *
  * @author lucasho
  * @created 2017-02-23
- * @modified 2017-02-23
- * @version 1.0
+ * @modified 2017-06-20
+ * @version 1.1
  * @link http://github.com/cqlucasho
  */
 class ServerService extends Server {
@@ -22,7 +22,7 @@ class ServerService extends Server {
 
 try {
     $servicesServer = new ServerService('tcp://127.0.0.1:8089');
-    $servicesServer->process_count = 1;
+    $servicesServer->process_count = 4;
 
     $servicesServer->onMessage = function($data) {
         $receDatas = explode(';', $data);

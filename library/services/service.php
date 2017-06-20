@@ -4,8 +4,8 @@
  *
  * @author lucasho
  * @created 2017-01-18
- * @modified 2017-01-18
- * @version 1.0
+ * @modified 2017-06-20
+ * @version 1.1
  * @link http://github.com/cqlucasho
  */
 class Service implements IService {
@@ -34,12 +34,12 @@ class Service implements IService {
      * @see IService::fetch()
      */
     public static function fetch(&$sign) {
-        $md5Name = md5($sign);
-        if(isset(self::$_service_map[$md5Name])) {
-            $services = self::$_service_map[$md5Name];
+        $shID = self::_open($sign);
+        $shmData = shmop_read($shID, 0, shmop_size($shID));
 
-            # 判断服务是否可用, 并作故障转移调用另一台可用服务器
-            $service = self::_check($services);
+        if($shmData) {
+            # 判断服务是否可用, 故障转移调用另一台可用服务器
+            $service = self::_check($shmData);
             if(!empty($service)) return $service;
 
             return false;
@@ -52,43 +52,37 @@ class Service implements IService {
      * @see IService::register()
      */
     public static function register(array $params) {
-        $md5Name = md5($params['sign']);
-
-        if(!isset(self::$_service_map[$md5Name])) {
-            self::$_service_map[$md5Name] = $params['params'];
+        $shID = self::_open($params['sign']);
+        if($byteNum = shmop_write($shID, serialize($params['params']), 0)) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     /**
      * @see IService::unregister()
      */
     public static function unregister(&$sign) {
-        $md5Name = md5($sign);
-
-        if(isset(self::$_service_map[$md5Name])) {
-            self::$_service_map[$md5Name] = null;
-            unset(self::$_service_map[$md5Name]);
-
+        $shID = self::_open($sign);
+        if($flag = shmop_delete($shID)) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     /**
      * 检测服务是否可用
      *
-     * @param array $services 服务列表
+     * @param int $shmData 配置信息
      * @return bool|array
      */
-    protected static function _check(array $services) {
-        if(empty($services)) return false;
+    protected static function _check(&$shmData) {
+        $datas = unserialize($shmData);
 
         $service = array();
-        foreach($services as $address => $value) {
+        foreach($datas as $address => $value) {
             if(!$value || (!$value['state'] && !$value['flag'])) continue;
 
             $service = array('address' => $address);
@@ -99,8 +93,26 @@ class Service implements IService {
     }
 
     /**
-     * 服务集合
-     * @var array $_service_map
+     * 打开
+     *
+     * @param string $shid 内存段id
+     * @return int
      */
-    public static $_service_map = array();
+    protected static function _open(&$shid) {
+        $shmID = shmop_open(self::_getSystemIpcID($shid), "c", 0755, 1024);
+
+        return $shmID;
+    }
+
+    /**
+     * system v ipc key
+     *
+     * @param string $key
+     * @return int|string
+     */
+    protected static function _getSystemIpcID(&$key) {
+        $key = crc32($key);
+
+        return sprintf('%u', ($key & 0xffff) | (($key & 0xff) << 16));
+    }
 }
