@@ -7,7 +7,6 @@ the framework is major used for solve micro services of application.
 
 `support protocol: tcp, websocket`
 <br>
-<br>
 
 ## server.php
 server.php is basic for the framework. 
@@ -16,7 +15,10 @@ server.php is basic for the framework.
 client.php is client request class.
 
 ## server_service.php
-service manager center
+service manager center.
+#### support
+* support that failover
+* support that allocate multiple service's address
 
 ## worker.php
 the test file for server.
