@@ -16,9 +16,6 @@ client.php is client request class.
 
 ## server_service.php
 service manager center.
-#### support
-* support that failover
-* support that allocate multiple service's address
 
 ## worker.php
 the test file for server.
